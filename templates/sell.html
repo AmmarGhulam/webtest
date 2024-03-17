@@ -1,0 +1,199 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    sell
+{% endblock %}
+{% block main %}
+<h1>القائمة</h1>
+<span style="font-size:30px;cursor:pointer;" onclick="openNav()">&#9776; الفاتورة</span>
+
+
+<div id="main">
+<div class="contener">
+    <div class="row">
+    {% for order in orders %}
+        <div class="col-md-3 mt3">
+            <div class= "card" style="background: #d9d9d9">
+                <img src="{{ url_for('static', filename= 'images/'+ order.picName) }}" alt="{{order.item}}" class="card-img-top" height="200">
+                <div class="card-body">
+                    <h5 class="text-center">{{order.item}}</h5>
+                    <p class="text-center">السعر {{order.price}}</p>
+                </div>
+                <div class="card-footer">
+                    <!-- <a href="#" class="float-start btn btn-sm btn-primary">details</a> -->
+                    <button class="float-end btn vtn-sm"style="color: #d9d9d9;background: #893a3e;" onclick="myFunction{{order.id}}();openNav()">اضافة</button>
+                    <!-- <a href="#" class="float-end btn vtn-sm btn-warning" >اضافة</a> -->
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+   <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <shopcart>
+
+        <div class="">
+            <div class="Header">
+                <h5 class="Action" onclick="deleteFunction()">حذف الكل</h5>
+                <h3 class="Heading">الفاتورة</h3>
+            </div>
+            {% for order in orders %}
+            <div class="Cart-Items" id="{{order.id}}" hidden="true">
+                <!-- <div class="image-box">
+                     <img src="static/images/HZ-HM.png" style=" height:100px;" />
+                </div> -->
+                <div class="about">
+                    <h2 class="title">{{order.item}}</h2>
+                </div>
+                <!-- <div class="counter">ريال</div> -->
+                <div class="prices" id="price{{order.id}}">{{order.price}}</div>
+                <div class="counter">
+                    <div class="btnn" onclick="myFunction{{order.id}}()">+</div>
+                    <div class="count" id="counter{{order.id}}">0</div>
+                    <div class="btnn" onclick="suptract({{order.id}})">-</div>
+                </div>
+                <div class="prices">
+                    <div class="amount" id="amount{{order.id}}">0</div>
+                    <!-- <div class="save"><u>Save for later</u></div> -->
+                    <div class="remove" onclick="deleteOne({{order.id}})"><u>حذف</u></div>
+                </div>
+            </div>
+            {% endfor %}
+
+
+            <hr>
+            <div class="checkout">
+                <div class="total">
+                    <div>
+                        <div class="items"><items id="items">0</items> items</div>
+                        <div class="Subtotal">المجموع</div>
+                    </div>
+                    <div class="totalamount" id="totalamount">0</div>
+                </div>
+                <!-- <form action="/sell" > -->
+
+                    <button class="butnn" onclick="if (confirm('اتمام الطلب والدفع')){addtoorder();}else{return false;};">إتمام الطلب</button>
+                    <!-- <button class="butnn" onclick="addtoorder()">إتمام الطلب</button> -->
+                <!-- </form> -->
+        </div>
+            <form id="myForm" action="/sell" method="post" hidden="true">
+                <input type="text" name="user_id" id="fuser_id">
+                <input type="text" name="process" id="fprocess">
+                <input type="number" name="number" id="fnumber">
+                <input type="number" name="price" id="fprice">
+
+
+                {% for order in orders %}
+                    <input type="text" name="cart[{{loop.index0}}][item]" id="cart[{{loop.index0}}][item]">
+                    <input type="number" name="cart[{{loop.index0}}][number]" id ="cart[{{loop.index0}}][number]">
+                    <input type="number" name="cart[{{loop.index0}}][price]" id="cart[{{loop.index0}}][price]">
+                {% endfor %}
+
+
+                <input type="button"  value="Submit form">
+              </form>
+
+
+        </div>
+       </shopcart>
+  </div>
+
+
+
+<h1 id="demo"></h1>
+</div>
+<script>
+    function addtoorder(){
+        user_id ={{session["user_id"]}};
+        process = "بيع";
+        number =parseInt(document.getElementById("items").innerHTML);
+        price = parseInt(document.getElementById("totalamount").innerHTML);
+
+        document.getElementById("fuser_id").setAttribute('value',user_id);
+        document.getElementById("fprocess").setAttribute('value',process);
+        document.getElementById("fnumber").setAttribute('value',number);
+        document.getElementById("fprice").setAttribute('value',price);
+
+
+        // let cart = [];
+        {% for order in orders %}
+        x{{loop.index0}} = parseInt(document.getElementById("counter{{order.id}}").innerHTML);
+        a{{loop.index0}} =parseInt(document.getElementById("amount{{order.id}}").innerHTML)
+        document.getElementById("cart[{{loop.index0}}][item]").setAttribute('value','{{order.item}}');
+        document.getElementById("cart[{{loop.index0}}][number]").setAttribute('value',x{{loop.index0}});
+        document.getElementById("cart[{{loop.index0}}][price]").setAttribute('value',a{{loop.index0}});
+        {% endfor %}
+        document.getElementById("myForm").submit();
+
+    }
+    function deleteFunction(){
+        document.getElementById("items").innerHTML = 0 ;
+        {% for order in orders %}
+        document.getElementById("counter{{order.id}}").innerHTML = 0;
+        document.getElementById("totalamount").innerHTML = 0;
+        document.getElementById({{order.id}}).hidden = true;
+        {% endfor %}
+        closeNav()
+    }
+    function suptract(value){
+        counter = parseInt(document.getElementById("counter"+value).innerHTML);
+        items = parseInt(document.getElementById("items").innerHTML);
+        document.getElementById("counter"+value).innerHTML = counter-1;
+        document.getElementById("items").innerHTML= items - 1;
+        document.getElementById("amount"+value).innerHTML =
+        (counter-1) * parseInt(document.getElementById("price"+value).innerHTML);
+        document.getElementById("totalamount").innerHTML = document.getElementById("totalamount").innerHTML -parseInt(document.getElementById("price"+value).innerHTML);
+        if(document.getElementById("counter"+value).innerHTML ==0){
+            document.getElementById(value).hidden = true;
+        }
+    }
+    function deleteOne(id){
+        counter = parseInt(document.getElementById("counter"+id).innerHTML);
+        items = parseInt(document.getElementById("items").innerHTML);
+        document.getElementById("counter"+id).innerHTML = 0;
+        document.getElementById("items").innerHTML= (items - counter);
+        document.getElementById("totalamount").innerHTML = document.getElementById("totalamount").innerHTML - (counter*document.getElementById("price"+id).innerHTML);
+        document.getElementById(id).hidden = true;
+    }
+
+    function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById('main').style.marginLeft = "250px";
+    //   document.getElementsByTagName('span').style.color = "#ff0000";
+    }
+
+    function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById('main').style.marginLeft= "0";
+    }
+    {% for order in orders %}
+        function myFunction{{order.id}}() {
+            newitems=parseInt(document.getElementById("items").innerHTML);
+            newamount=parseInt(document.getElementById("totalamount").innerHTML);
+            if ( document.getElementById("counter{{order.id}}").innerHTML == 0){
+                const counter=1;
+                oldcounter =  parseInt(document.getElementById("counter{{order.id}}").innerHTML);
+                document.getElementById("counter{{order.id}}").innerHTML = counter + oldcounter;
+                document.getElementById("{{order.id}}").hidden = false;
+                document.getElementById("items").innerHTML= newitems +1;
+
+                document.getElementById("amount{{order.id}}").innerHTML ={{order.price}};
+                document.getElementById("totalamount").innerHTML = newamount + parseInt(document.getElementById("amount{{order.id}}").innerHTML) *  (counter + oldcounter);
+
+            }else if (document.getElementById("counter{{order.id}}").innerHTML > 0){
+
+                value = document.getElementById("counter{{order.id}}").innerHTML;
+                value++;
+                document.getElementById("counter{{order.id}}").innerHTML = value;
+                newitems++;
+                document.getElementById("items").innerHTML= newitems;
+
+                document.getElementById("amount{{order.id}}").innerHTML ={{order.price}} * value;
+                newamount=newamount + {{order.price}};
+                document.getElementById("totalamount").innerHTML = newamount;
+            }
+        }
+    {% endfor %}
+</script>
+{% endblock %}

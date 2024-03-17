@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    الإعدادات
+{% endblock %}
+
+{% block main %}
+<h3>اضافة منتج لقائمة الطلبات</h3>
+<form action="/setting" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="item" name="item" placeholder="اسم المنتج" type="text">
+    </div>
+    <div class="mb-3">
+        <input class="form-control mx-auto w-auto" id="price" name="price" placeholder="السعر" type="text">
+    </div>
+    <div class="mb-3">
+        <label for="sub">اضافة لقخزم:</label>
+        <select id="sub" name="sub">
+            <option name="sub" value="disert">الحلويات</option>
+            <option name="sub" value="hot">المشروبات الساخنة</option>
+            <option name="sub" value="cold">المشروبات الباردة</option>
+        </select>
+
+    </div>
+    إضافة صورة للمنتج:
+    <input type="file" name="uploaded-file" accept="image/*" id="image" required>
+    <input type="submit" name="submit" value="submit" required>
+  </form>
+
+  
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    سجل العمليات
+{% endblock %}
+
+{% block main %}
+<h3>سجل العمليات</h3>
+<h2>المبيعات</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">البائع</th>
+                <th scope="col">العملية</th>
+              <th scope="col" >عدد المنتجات</th>
+              <th scope="col">السعر</th>
+              <th scope="col">التاريخ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for transaction in transactions %}
+            <tr>
+              <th scope="row">{{transaction.id}}</th>
+              <td >{{transaction.user_id}}</td>
+              <td>{{transaction.process}}</td>
+              <td>{{transaction.number}}</td>
+              <td>{{transaction.price}}</td>
+              <td>{{transaction.timestamp}}</td>
+            </tr>
+           {% endfor %}
+          </tbody>
+
+    </table>
+
+
+{% endblock %}

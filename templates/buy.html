@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    buy
+{% endblock %}
+
+{% block main %}
+    <h1>المشتريات</h1>
+    <h3>يتم اضافة جميع المنتجات لمعرفةالمصروفات اليومية والشهرية والسنوية</h3>
+
+
+    <form action="/buy" method="post" >
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="symbol" name="name" placeholder="اسم المنتج" type="text">
+        </div>
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="shares" name="price" placeholder="السعر" type="text">
+        </div>
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="number" name="number" placeholder="العدد" type="text">
+        </div>
+        <p></p>
+        <div class="mb-3">
+            <button disabled class="btn btn-primary" type="submit" id="button">اضافة لقائمة المشتريات</button>
+        </div>
+    </form>
+
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col" colspan="4">المنتج</th>
+              <th scope="col">السعر</th>
+              <th scope="col">العدد</th>
+              <th scope="col">التاريخ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for purchase in purchases %}
+                <tr>
+                    <th scope="row">{{purchase.id}}</th>
+                    <td colspan="4">{{purchase.name}}</td>
+                    <td>{{purchase.price}}</td>
+                    <td>{{purchase.number}}</td>
+                    <td>{{purchase.timestamp}}</td>
+                </tr>
+            {% endfor %}
+          </tbody>
+
+     </table>
+    <!-- <h2>المبيعات</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">البائع</th>
+              <th scope="col" colspan="4">المنتج</th>
+              <th scope="col">السعر</th>
+              <th scope="col">التاريخ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for transaction in transactions %}
+            <tr>
+              <th scope="row">{{transaction.id}}</th>
+              <td colspan="4">{{transaction.user_id}}</td>
+              <td>{{transaction.number}}</td>
+              <td>{{transaction.price}}</td>
+              <td>{{transaction.timestamp}}</td>
+            </tr>
+           {% endfor %}
+          </tbody>
+
+    </table> -->
+    <script>
+        document.querySelector('form').addEventListener('input',myfunction);
+                function myfunction(){
+                    if (document.querySelector('#shares').value <=0){
+                        document.querySelector('p').innerHTML = "Must provide positive number of shares";
+                        if(document.querySelector('#symbol').value != "" ){
+                            document.querySelector('#button').setAttribute('disabled','');
+
+                        }
+                    }else{
+                        document.querySelector('p').innerHTML ="";
+                        document.querySelector('#button').removeAttribute('disabled');
+                    }
+                }
+            </script>
+{% endblock %}

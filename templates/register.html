@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    register
+{% endblock %}
+
+{% block main %}
+    <form action="/register" method="post" >
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="اسم المستخدم" type="text">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="كلمة المرور" type="password">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="confirmation" name="confirmation" placeholder="تكرار كلمة المرور" type="password">
+            <p></p>
+        </div>
+        <button disabled class="btn btn-primary" type="submit" id="button">تسجيل</button>
+    </form>
+    <script>
+document.querySelector('form').addEventListener('input',myfunction);
+        function myfunction(){
+            if (document.querySelector('#password').value == document.querySelector('#confirmation').value){
+                document.querySelector('p').innerHTML = "Password Match";
+                if(document.querySelector('#username').value != "" ){
+                    document.querySelector('#button').removeAttribute('disabled');
+                }
+            }else{
+                document.querySelector('p').innerHTML ="";
+                document.querySelector('#button').setAttribute('disabled','');
+            }
+        }
+    </script>
+{% endblock %}
